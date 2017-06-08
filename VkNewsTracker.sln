@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.12
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VkNewsTracker.Console", "VkNewsTracker.Console\VkNewsTracker.Console.csproj", "{9DE7B193-85A5-4FFC-BF3A-1818DAEE230E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VkNewsTracker.Common", "VkNewsTracker.Common\VkNewsTracker.Common.csproj", "{7066C7A4-D907-42B3-9811-221DB02622FE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VkNewsTracker.NLog.Telegram", "VkNewsTracker.NLog.Telegram\VkNewsTracker.NLog.Telegram.csproj", "{D7B5AD63-E880-4134-862E-5507C7B286E4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VkNewsTracker.Citrina", "VkNewsTracker.Citrina\VkNewsTracker.Citrina.csproj", "{9662D7CD-2045-4B75-BFF1-85856F1ABB07}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9DE7B193-85A5-4FFC-BF3A-1818DAEE230E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9DE7B193-85A5-4FFC-BF3A-1818DAEE230E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9DE7B193-85A5-4FFC-BF3A-1818DAEE230E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9DE7B193-85A5-4FFC-BF3A-1818DAEE230E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7066C7A4-D907-42B3-9811-221DB02622FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7066C7A4-D907-42B3-9811-221DB02622FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7066C7A4-D907-42B3-9811-221DB02622FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7066C7A4-D907-42B3-9811-221DB02622FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D7B5AD63-E880-4134-862E-5507C7B286E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D7B5AD63-E880-4134-862E-5507C7B286E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D7B5AD63-E880-4134-862E-5507C7B286E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D7B5AD63-E880-4134-862E-5507C7B286E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9662D7CD-2045-4B75-BFF1-85856F1ABB07}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9662D7CD-2045-4B75-BFF1-85856F1ABB07}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9662D7CD-2045-4B75-BFF1-85856F1ABB07}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9662D7CD-2045-4B75-BFF1-85856F1ABB07}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

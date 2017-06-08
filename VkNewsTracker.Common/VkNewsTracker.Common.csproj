@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp1.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Autofac" Version="4.6.0" />
+    <PackageReference Include="NLog" Version="5.0.0-beta07" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\VkNewsTracker.Citrina\VkNewsTracker.Citrina.csproj" />
+  </ItemGroup>
+
+</Project>
