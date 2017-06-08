@@ -60,5 +60,6 @@ Track your vk.com newsfeed updates with regex filtering and telegram notificatio
 ```
 
 # Depedencies
+* .NET Core 1.1
 * https://github.com/narfunikita/NLog.Telegram - modified for compatibility with .NET Core
 * https://github.com/khrabrovart/Citrina - modified for some additional fields support
