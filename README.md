@@ -28,7 +28,7 @@ Track your vk.com newsfeed updates with regex filtering and telegram notificatio
       xsi:schemaLocation="http://www.nlog-project.org/schemas/NLog.xsd NLog.xsd"
       autoReload="true"
       throwExceptions="false"
-      internalLogLevel="Trace" internalLogFile="c:\temp\nlog-internal.log">
+      internalLogLevel="Off" internalLogFile="c:\temp\nlog-internal.log">
 
   <extensions>
     <add assembly="VkNewsTracker.NLog.Telegram" />
@@ -45,8 +45,10 @@ Track your vk.com newsfeed updates with regex filtering and telegram notificatio
             concurrentWrites="true"
             keepFileOpen="false" />
 
-    <target xsi:type="Telegram"
-            name ="telegram"
+    <target name="consoleout" xsi:type="Console" 
+            layout="${longdate} | ${level:uppercase=true} | ${logger} | ${message} | ${exception:format=tostring}" />
+    
+    <target name ="telegram" xsi:type="Telegram"
             layout="${message}"
             botToken ="XXX"
             chatId="-XXX for chats or XXX for users" />
@@ -54,7 +56,8 @@ Track your vk.com newsfeed updates with regex filtering and telegram notificatio
 
   <rules>
     <logger name="*" minlevel="Trace" writeTo="logfile" />
-    <logger name="*" minlevel="Debug" writeTo="telegram" />
+    <logger name="*" minlevel="Debug" writeTo="consoleout" />
+    <logger name="*" minlevel="Info" writeTo="telegram" />
   </rules>
 </nlog>
 ```
