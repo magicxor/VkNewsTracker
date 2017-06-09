@@ -657,6 +657,7 @@ namespace Citrina.StandardApi.Models
         public IEnumerable<NewsfeedNewsfeedItem> Items { get; set; }
         public IEnumerable<UsersUserFull> Profiles { get; set; }
         public IEnumerable<GroupsGroupFull> Groups { get; set; }
+        public string NextFrom { get; set; }
     }
 
     public class NewsfeedGetRecommendedResponse

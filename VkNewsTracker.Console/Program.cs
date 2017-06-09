@@ -17,7 +17,7 @@ namespace VkNewsTracker.Console
         {
             try
             {
-                _logger.Trace("{0} has been started", Assembly.GetEntryAssembly().GetName().Name);
+                _logger.Debug("{0} has been started", Assembly.GetEntryAssembly().GetName().Name);
 
                 var container = ContainerConfig.Configure(Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), Defaults.ConfigurationFileName));
                 using (var scope = container.BeginLifetimeScope())
@@ -26,7 +26,7 @@ namespace VkNewsTracker.Console
                     worker.Run();
                 }
                 
-                _logger.Trace("{0} has been stopped", Assembly.GetEntryAssembly().GetName().Name);
+                _logger.Debug("{0} has been stopped", Assembly.GetEntryAssembly().GetName().Name);
             }
             catch (Exception ex)
             {

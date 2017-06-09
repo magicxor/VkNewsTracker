@@ -1382,6 +1382,18 @@ namespace Citrina
         public int? CopyPostId { get; set; }
         public string Text { get; set; }
         public bool? CanEdit { get; set; }
+        public IEnumerable<WallWallpost> CopyHistory { get; set; }
+        public IEnumerable<WallWallpostAttachment> Attachments { get; set; }
+        public BaseGeo Geo { get; set; }
+        public WallPostSource PostSource { get; set; }
+        public BaseCommentsInfo Comments { get; set; }
+        public BaseLikesInfo Likes { get; set; }
+        public BaseRepostsInfo Reposts { get; set; }
+        public NewsfeedItemPhotoPhotos Photos { get; set; }
+        public NewsfeedItemPhotoTagPhotoTags PhotoTags { get; set; }
+        public NewsfeedItemNoteNotes Notes { get; set; }
+        public NewsfeedItemAudioAudio Audio { get; set; }
+        public NewsfeedItemVideoVideo Video { get; set; }
     }
 
     public class NewsfeedItemAudio
