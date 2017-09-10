@@ -1,20 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
+  
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp1.1</TargetFramework>
-    <RuntimeIdentifiers>win10-x64</RuntimeIdentifiers>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+	  <RuntimeIdentifier>win10-x64</RuntimeIdentifier>
   </PropertyGroup>
-
+  
   <ItemGroup>
     <ProjectReference Include="..\VkNewsTracker.Common\VkNewsTracker.Common.csproj" />
-    <ProjectReference Include="..\VkNewsTracker.NLog.Telegram\VkNewsTracker.NLog.Telegram.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <None Update="NLog.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
+  
 </Project>

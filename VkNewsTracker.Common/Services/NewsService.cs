@@ -7,27 +7,30 @@ using System.Threading.Tasks;
 using Citrina;
 using Citrina.StandardApi;
 using Citrina.StandardApi.Models;
-using NLog;
+using Microsoft.Extensions.Logging;
+using Telegram.Bot;
+using Telegram.Bot.Types;
 
 namespace VkNewsTracker.Common.Services
 {
     public class NewsService
     {
-        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
         private readonly SettingsService _settingsService;
         private readonly CitrinaClient _vkClient;
         private readonly UserAccessToken _vkAccessToken;
+        private readonly ILogger _logger;
+        private readonly ITelegramBotClient _botClient;
 
-        private HashSet<string> _postsIdentifiers = new HashSet<string>();
-
-        public NewsService(SettingsService settingsService, CitrinaClient vkClient, UserAccessToken vkAccessToken)
+        public NewsService(SettingsService settingsService, CitrinaClient vkClient, UserAccessToken vkAccessToken, ILogger logger, ITelegramBotClient botClient)
         {
             _settingsService = settingsService;
             _vkClient = vkClient;
             _vkAccessToken = vkAccessToken;
+            _logger = logger;
+            _botClient = botClient;
         }
 
-        public async Task<ApiCall<NewsfeedGetRequest, NewsfeedGetResponse>> FetchUpdatesAsync(string startFrom = null)
+        private async Task<ApiCall<NewsfeedGetRequest, NewsfeedGetResponse>> FetchUpdatesAsync(string startFrom = null)
         {
             var apiCall = await _vkClient.Newsfeed.Get(new NewsfeedGetRequest()
             {
@@ -39,53 +42,52 @@ namespace VkNewsTracker.Common.Services
         }
 
 
-        public void FetchUpdates(string startFrom = null)
+        public void FetchUpdates()
         {
-            var apiCall = FetchUpdatesAsync(startFrom).Result;
+            const int maxTelegramStringLength = 4095;
+            var postsIdentifiers = new HashSet<string>();
+            NewsfeedNewsfeedItem lastItem = null;
+            string startFrom = null;
 
-            if (!apiCall.IsError)
+            while (lastItem == null
+                || (!string.IsNullOrEmpty(startFrom)
+                    && lastItem.Date.GetValueOrDefault().ToUniversalTime() > _settingsService.ApplicationSettings.LastUpdate))
             {
-                foreach (var responseItem in apiCall.Response.Items)
+                _logger.LogTrace($"{nameof(startFrom)}={startFrom}. Date of the last item = {lastItem?.Date.GetValueOrDefault().ToUniversalTime()}");
+                var apiCall = FetchUpdatesAsync(startFrom).Result;
+                if (!apiCall.IsError)
                 {
-                    if (!string.IsNullOrEmpty(responseItem.Text) &&
-                        responseItem.Date.GetValueOrDefault().ToUniversalTime() > _settingsService.ApplicationSettings.LastUpdate &&
-                        !_postsIdentifiers.Contains($"{responseItem.SourceId}_{responseItem.PostId}") &&
-                        _settingsService.ApplicationSettings.IncludedPatterns.Any(
-                            pattern => Regex.IsMatch(responseItem.Text, pattern)) &&
-                        !_settingsService.ApplicationSettings.ExcludedPatterns.Any(
-                            pattern => Regex.IsMatch(responseItem.Text, pattern)))
+                    foreach (var responseItem in apiCall.Response.Items)
                     {
-                        _postsIdentifiers.Add($"{responseItem.SourceId}_{responseItem.PostId}");
-                        _logger.Info($"New match found: {responseItem.Date} https://vk.com/wall{responseItem.SourceId}_{responseItem.PostId} {responseItem.Text}");
-                       Thread.Sleep(300);
+                        if (!string.IsNullOrEmpty(responseItem.Text)
+                            && responseItem.Date.GetValueOrDefault().ToUniversalTime() > _settingsService.ApplicationSettings.LastUpdate
+                            && !postsIdentifiers.Contains($"{responseItem.SourceId}_{responseItem.PostId}")
+                            && _settingsService.ApplicationSettings.IncludedPatterns.Any(pattern => Regex.IsMatch(responseItem.Text, pattern))
+                            && !_settingsService.ApplicationSettings.ExcludedPatterns.Any(pattern => Regex.IsMatch(responseItem.Text, pattern)))
+                        {
+                            postsIdentifiers.Add($"{responseItem.SourceId}_{responseItem.PostId}");
+                            var messageText = $"New match found: {responseItem.Date} https://vk.com/wall{responseItem.SourceId}_{responseItem.PostId} {responseItem.Text}";
+                            if (messageText.Length > maxTelegramStringLength)
+                            {
+                                messageText = messageText.Substring(0, maxTelegramStringLength);
+                            }
+                            var message = _botClient.SendTextMessageAsync(new ChatId(_settingsService.ApplicationSettings.TelegramChatId), messageText).Result;
+                            Thread.Sleep(TimeSpan.FromMilliseconds(_settingsService.ApplicationSettings.TelegramMessageFrequency));
+                        }
                     }
-                }
-
-                var lastItem = apiCall.Response.Items.LastOrDefault();
-
-                if (!string.IsNullOrEmpty(apiCall.Response.NextFrom) &&
-                    lastItem != null &&
-                    lastItem.Date.GetValueOrDefault().ToUniversalTime() >
-                    _settingsService.ApplicationSettings.LastUpdate)
-                {
-                    _logger.Trace($"LastUpdate of last item = {lastItem.Date.GetValueOrDefault().ToUniversalTime()}. Going to the next page with {apiCall.Response.NextFrom}...");
-                    Thread.Sleep(1000);
-                    FetchUpdates(apiCall.Response.NextFrom);
-                    return;
+                    lastItem = apiCall.Response.Items.Where(item => item.Date.HasValue).OrderByDescending(item => item.Date.Value).LastOrDefault();
+                    startFrom = apiCall.Response.NextFrom;
+                    Thread.Sleep(TimeSpan.FromMilliseconds(_settingsService.ApplicationSettings.VkPageFetchFrequency));
                 }
                 else
                 {
-                    _logger.Trace($"This is the last page. LastUpdate of last item = {lastItem?.Date.GetValueOrDefault().ToUniversalTime()}.");
+                    var errorMessage = apiCall.Error.Message;
+                    throw new Exception(errorMessage);
                 }
-
-                _settingsService.ApplicationSettings.LastUpdate = DateTime.UtcNow;
-                _settingsService.Save();
             }
-            else
-            {
-                var errorMessage = apiCall.Error.Message;
-                throw new Exception(errorMessage);
-            }
+            _logger.LogTrace($"{nameof(startFrom)}={startFrom}. Date of the last item = {lastItem?.Date.GetValueOrDefault().ToUniversalTime()}. Fetching is stopped.");
+            _settingsService.ApplicationSettings.LastUpdate = DateTime.UtcNow;
+            _settingsService.Save();
         }
     }
 }

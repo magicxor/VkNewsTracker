@@ -7,6 +7,5 @@
         public const string ConfigurationFileName = "appsettings.json";
         public const int ApplicationId = 5891549;
         public const int AccessTokenLifetime = 3600;
-        public const int RefreshPeriod = 3600;
     }
 }
