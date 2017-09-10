@@ -61,13 +61,21 @@ namespace VkNewsTracker.Common.Services
                     }
                 }
 
+                var lastItem = apiCall.Response.Items.LastOrDefault();
+
                 if (!string.IsNullOrEmpty(apiCall.Response.NextFrom) &&
-                    apiCall.Response.Items.LastOrDefault() != null &&
-                    apiCall.Response.Items.LastOrDefault().Date.GetValueOrDefault().ToUniversalTime() >
+                    lastItem != null &&
+                    lastItem.Date.GetValueOrDefault().ToUniversalTime() >
                     _settingsService.ApplicationSettings.LastUpdate)
                 {
+                    _logger.Trace($"LastUpdate of last item = {lastItem.Date.GetValueOrDefault().ToUniversalTime()}. Going to the next page with {apiCall.Response.NextFrom}...");
+                    Thread.Sleep(1000);
                     FetchUpdates(apiCall.Response.NextFrom);
                     return;
+                }
+                else
+                {
+                    _logger.Trace($"This is the last page. LastUpdate of last item = {lastItem?.Date.GetValueOrDefault().ToUniversalTime()}.");
                 }
 
                 _settingsService.ApplicationSettings.LastUpdate = DateTime.UtcNow;
