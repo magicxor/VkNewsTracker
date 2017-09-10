@@ -5,6 +5,10 @@ Track your vk.com newsfeed updates with regex filtering and telegram notificatio
 ## appsettings.json:
 ```json
 {
+   "TelegramMessageFrequency":300,
+   "TelegramBotToken":"YOUR_TOKEN",
+   "TelegramChatId":-XXXXXXX,
+   "VkPageFetchFrequency":1000,
    "ApplicationId":5891549,
    "AccessToken":"YOUR_TOKEN",
    "AccessTokenLifetime":3600,
@@ -20,49 +24,7 @@ Track your vk.com newsfeed updates with regex filtering and telegram notificatio
    ]
 }
 ```
-## NLog.config
-```xml
-<?xml version="1.0" encoding="utf-8" ?>
-<nlog xmlns="http://www.nlog-project.org/schemas/NLog.xsd"
-      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xsi:schemaLocation="http://www.nlog-project.org/schemas/NLog.xsd NLog.xsd"
-      autoReload="true"
-      throwExceptions="false"
-      internalLogLevel="Off" internalLogFile="c:\temp\nlog-internal.log">
-
-  <extensions>
-    <add assembly="VkNewsTracker.NLog.Telegram" />
-  </extensions>
-
-  <targets async="true">
-    <target name="logfile" xsi:type="File"
-            layout="${longdate} | ${level:uppercase=true} | ${logger} | ${message} | ${exception:format=tostring}"
-            fileName="${basedir}/logs/Log.current.txt"
-            archiveFileName="${basedir}/logs/archives/log.${shortdate}.{#}.txt"
-            archiveEvery="Day"
-            archiveNumbering = "Rolling"
-            maxArchiveFiles="10"
-            concurrentWrites="true"
-            keepFileOpen="false" />
-
-    <target name="consoleout" xsi:type="Console" 
-            layout="${longdate} | ${level:uppercase=true} | ${logger} | ${message} | ${exception:format=tostring}" />
-    
-    <target name ="telegram" xsi:type="Telegram"
-            layout="${message}"
-            botToken ="XXX"
-            chatId="-XXX for chats or XXX for users" />
-  </targets>
-
-  <rules>
-    <logger name="*" minlevel="Trace" writeTo="logfile" />
-    <logger name="*" minlevel="Debug" writeTo="consoleout" />
-    <logger name="*" minlevel="Info" writeTo="telegram" />
-  </rules>
-</nlog>
-```
 
 # Depedencies
-* .NET Core 1.1
-* https://github.com/narfunikita/NLog.Telegram - modified for compatibility with .NET Core
+* .NET Core 2.0
 * https://github.com/khrabrovart/Citrina - modified for some additional fields support
