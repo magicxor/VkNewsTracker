@@ -5,8 +5,6 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Citrina;
-using Citrina.StandardApi;
-using Citrina.StandardApi.Models;
 using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 using Telegram.Bot.Types;
@@ -30,14 +28,9 @@ namespace VkNewsTracker.Common.Services
             _botClient = botClient;
         }
 
-        private async Task<ApiCall<NewsfeedGetRequest, NewsfeedGetResponse>> FetchUpdatesAsync(string startFrom = null)
+        private ApiRequest<NewsfeedGetResponse> FetchUpdatesStartingFrom(string startFrom = null)
         {
-            var apiCall = await _vkClient.Newsfeed.Get(new NewsfeedGetRequest()
-            {
-                AccessToken = _vkAccessToken,
-                Count = 100,
-                StartFrom = string.IsNullOrEmpty(startFrom) ? null : startFrom,
-            }).ConfigureAwait(false);
+            var apiCall = _vkClient.Newsfeed.Get(_vkAccessToken,startFrom: string.IsNullOrEmpty(startFrom) ? null : startFrom,count:100).Result;
             return apiCall;
         }
 
@@ -54,7 +47,7 @@ namespace VkNewsTracker.Common.Services
                     && lastItem.Date.GetValueOrDefault().ToUniversalTime() > _settingsService.ApplicationSettings.LastUpdate))
             {
                 _logger.LogTrace($"{nameof(startFrom)}={startFrom}. Date of the last item = {lastItem?.Date.GetValueOrDefault().ToUniversalTime()}");
-                var apiCall = FetchUpdatesAsync(startFrom).Result;
+                var apiCall = FetchUpdatesStartingFrom(startFrom);
                 if (!apiCall.IsError)
                 {
                     foreach (var responseItem in apiCall.Response.Items)

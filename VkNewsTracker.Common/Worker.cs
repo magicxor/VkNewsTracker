@@ -27,7 +27,7 @@ namespace VkNewsTracker.Common
 
             if (string.IsNullOrEmpty(_settingsService.ApplicationSettings.AccessToken) || _settingsService.ApplicationSettings.UserId == default(int))
             {
-                _logger.LogInformation("Please obtain AccessToken and UserId: " + _vkClient.AuthHelpers.GenerateLink(LinkType.Token,
+                _logger.LogInformation("Please obtain AccessToken and UserId: " + _vkClient.AuthHelper.GenerateLink(LinkType.Token,
                                  _settingsService.ApplicationSettings.ApplicationId,
                                  Defaults.RedirectUri,
                                  DisplayOptions.Default,
