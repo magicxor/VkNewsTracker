@@ -1,18 +1,20 @@
-﻿using Autofac;
+﻿using System.IO;
+using Autofac;
 using Citrina;
 using Microsoft.Extensions.Logging;
 using Telegram.Bot;
+using VkNewsTracker.Common.Constants;
 using VkNewsTracker.Common.Services;
 
 namespace VkNewsTracker.Common.DependencyInjection
 {
-    public class ContainerConfig
+    public class ContainerConfiguration
     {
-        public static IContainer Configure(string applicationSettingsPath)
+        public static IContainer Configure(string applicationPath)
         {
             var builder = new ContainerBuilder();
 
-            var settingsService = new SettingsService(applicationSettingsPath);
+            var settingsService = new SettingsService(Path.Combine(applicationPath, Defaults.ConfigurationFileName));
             settingsService.Load();
 
             var vkClient = new CitrinaClient();
@@ -22,8 +24,8 @@ namespace VkNewsTracker.Common.DependencyInjection
                 settingsService.ApplicationSettings.ApplicationId);
 
             var loggerFactory = new LoggerFactory();
-            loggerFactory.AddConsole(LogLevel.Trace);
-            loggerFactory.AddFile("{Date}.txt", LogLevel.Trace);
+            var logPath = Path.Combine(applicationPath, Defaults.LogDirectoryName, "log-{Date}.txt");
+            loggerFactory.AddConsole(LogLevel.Trace).AddFile(logPath, LogLevel.Trace, retainedFileCountLimit: 10);
 
             var botClient = new TelegramBotClient(settingsService.ApplicationSettings.TelegramBotToken);
 

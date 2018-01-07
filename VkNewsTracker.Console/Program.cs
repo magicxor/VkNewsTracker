@@ -14,7 +14,7 @@ namespace VkNewsTracker.Console
         {
             try
             {
-                var container = ContainerConfig.Configure(Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), Defaults.ConfigurationFileName));
+                var container = ContainerConfiguration.Configure(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
                 using (var scope = container.BeginLifetimeScope())
                 {
                     var worker = scope.Resolve<Worker>();

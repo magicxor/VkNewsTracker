@@ -8,6 +8,7 @@ using Citrina;
 using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 using Telegram.Bot.Types;
+using VkNewsTracker.Common.Constants;
 
 namespace VkNewsTracker.Common.Services
 {
@@ -30,7 +31,12 @@ namespace VkNewsTracker.Common.Services
 
         private ApiRequest<NewsfeedGetResponse> FetchUpdatesStartingFrom(string startFrom = null)
         {
-            var apiCall = _vkClient.Newsfeed.Get(_vkAccessToken,startFrom: string.IsNullOrEmpty(startFrom) ? null : startFrom,count:100).Result;
+            var apiCall = _vkClient
+                .Newsfeed
+                .Get(_vkAccessToken,
+                    startFrom: string.IsNullOrEmpty(startFrom) ? null : startFrom, 
+                    count: Defaults.MaxNewsfeedSize)
+                .Result;
             return apiCall;
         }
 
