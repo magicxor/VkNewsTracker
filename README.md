@@ -27,4 +27,7 @@ Track your vk.com newsfeed updates with regex filtering and telegram notificatio
 
 # Depedencies
 * .NET Core 2.0
-* https://github.com/khrabrovart/Citrina - modified for some additional fields support
+* Microsoft.Extensions.Logging with Microsoft.Extensions.Logging.Console and Serilog.Extensions.Logging.File providers
+* [Citrina](https://github.com/khrabrovart/Citrina)
+* [Autofac](https://autofac.org)
+* [Telegram.Bot](https://github.com/TelegramBots/telegram.bot)
