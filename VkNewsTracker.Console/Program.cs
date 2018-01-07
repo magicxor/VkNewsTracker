@@ -3,7 +3,6 @@ using System.IO;
 using System.Reflection;
 using Autofac;
 using VkNewsTracker.Common;
-using VkNewsTracker.Common.Constants;
 using VkNewsTracker.Common.DependencyInjection;
 
 namespace VkNewsTracker.Console
