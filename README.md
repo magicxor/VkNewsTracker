@@ -1,3 +1,5 @@
+**(deprecated in favor of https://github.com/magicxor/ExtensibleMessageBroker)**
+
 # VkNewsTracker
 Track your vk.com newsfeed updates with regex filtering and telegram notifications
 
